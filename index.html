@@ -15,7 +15,7 @@
     
     <script type="text/babel">
         const { useState, useEffect } = React;
-        const { Trash2, History, Download, ShoppingCart, Plus, Minus } = lucide;
+        const { Trash2, History, Download, ShoppingCart, Plus, Minus } = lucideReact;
 
         const SPCMerchandiseRegister = () => {
           const [cart, setCart] = useState([]);
@@ -248,202 +248,225 @@
           const NotificationComponent = () => {
             if (!notification) return null;
             
-            return React.createElement('div', {
-              className: `fixed top-2 left-2 right-2 z-50 p-2 rounded-lg shadow-lg text-center text-sm ${
+            return (
+              <div className={`fixed top-2 left-2 right-2 z-50 p-2 rounded-lg shadow-lg text-center text-sm ${
                 notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-              }`
-            }, notification.message);
+              }`}>
+                {notification.message}
+              </div>
+            );
           };
 
           if (showHistory) {
-            return React.createElement('div', { className: "min-h-screen bg-gray-50 p-2" },
-              React.createElement(NotificationComponent),
-              React.createElement('div', { className: "max-w-4xl mx-auto" },
-                React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-3" },
-                  React.createElement('div', { className: "flex justify-between items-center mb-4" },
-                    React.createElement('h1', { className: "text-xl font-bold text-gray-800" }, "Storico Transazioni"),
-                    React.createElement('button', {
-                      onClick: () => setShowHistory(false),
-                      className: "bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm"
-                    }, "Torna al Registro")
-                  ),
-                  React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-3 gap-3 mb-4" },
-                    React.createElement('div', { className: "bg-green-100 p-3 rounded-lg text-center" },
-                      React.createElement('h3', { className: "font-semibold text-green-800 text-sm" }, "Vendite Oggi"),
-                      React.createElement('p', { className: "text-xl font-bold text-green-600" }, `€${getTodayTotal().toFixed(2)}`)
-                    ),
-                    React.createElement('div', { className: "bg-blue-100 p-3 rounded-lg text-center" },
-                      React.createElement('h3', { className: "font-semibold text-blue-800 text-sm" }, "Transazioni Oggi"),
-                      React.createElement('p', { className: "text-xl font-bold text-blue-600" }, getTodayTransactions().length)
-                    ),
-                    React.createElement('div', { className: "bg-purple-100 p-3 rounded-lg text-center" },
-                      React.createElement('button', {
-                        onClick: exportToPDF,
-                        className: "bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 mx-auto text-sm"
-                      },
-                        React.createElement(Download, { size: 16 }),
-                        "Esporta Report"
-                      )
-                    )
-                  ),
-                  React.createElement('div', { className: "space-y-3 max-h-80 overflow-y-auto" },
-                    transactions.map(transaction =>
-                      React.createElement('div', { 
-                        key: transaction.id, 
-                        className: "border border-gray-200 rounded-lg p-3" 
-                      },
-                        React.createElement('div', { className: "flex justify-between items-center mb-2" },
-                          React.createElement('span', { className: "font-semibold text-sm" }, 
-                            `${transaction.date} - ${transaction.time}`),
-                          React.createElement('span', { className: "bg-green-100 text-green-800 px-2 py-1 rounded-full font-semibold text-sm" },
-                            `€${transaction.total.toFixed(2)}`)
-                        ),
-                        React.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600" },
-                          transaction.items.map((item, index) =>
-                            React.createElement('div', { key: index, className: "flex justify-between" },
-                              React.createElement('span', null, `${item.name} x${item.quantity}`),
-                              React.createElement('span', null, `€${(item.price * item.quantity).toFixed(2)}`)
-                            )
-                          )
-                        ),
-                        React.createElement('div', { className: "mt-2 pt-2 border-t border-gray-200 flex justify-between text-xs" },
-                          transaction.paid !== null ?
-                            [
-                              React.createElement('span', { key: 'paid' }, `Pagato: €${transaction.paid.toFixed(2)}`),
-                              React.createElement('span', { key: 'change' }, `Resto: €${transaction.change.toFixed(2)}`)
-                            ] :
-                            React.createElement('span', { className: "text-gray-500 italic" }, "Importo pagato non registrato")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
+            return (
+              <div className="min-h-screen bg-gray-50 p-2">
+                <NotificationComponent />
+                <div className="max-w-4xl mx-auto">
+                  <div className="bg-white rounded-lg shadow-lg p-3">
+                    <div className="flex justify-between items-center mb-4">
+                      <h1 className="text-xl font-bold text-gray-800">Storico Transazioni</h1>
+                      <button
+                        onClick={() => setShowHistory(false)}
+                        className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                      >
+                        Torna al Registro
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                      <div className="bg-green-100 p-3 rounded-lg text-center">
+                        <h3 className="font-semibold text-green-800 text-sm">Vendite Oggi</h3>
+                        <p className="text-xl font-bold text-green-600">€{getTodayTotal().toFixed(2)}</p>
+                      </div>
+                      <div className="bg-blue-100 p-3 rounded-lg text-center">
+                        <h3 className="font-semibold text-blue-800 text-sm">Transazioni Oggi</h3>
+                        <p className="text-xl font-bold text-blue-600">{getTodayTransactions().length}</p>
+                      </div>
+                      <div className="bg-purple-100 p-3 rounded-lg text-center">
+                        <button
+                          onClick={exportToPDF}
+                          className="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 mx-auto text-sm"
+                        >
+                          <Download size={16} />
+                          Esporta Report
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 max-h-80 overflow-y-auto">
+                      {transactions.map(transaction => (
+                        <div key={transaction.id} className="border border-gray-200 rounded-lg p-3">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-semibold text-sm">{transaction.date} - {transaction.time}</span>
+                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-semibold text-sm">
+                              €{transaction.total.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                            {transaction.items.map((item, index) => (
+                              <div key={index} className="flex justify-between">
+                                <span>{item.name} x{item.quantity}</span>
+                                <span>€{(item.price * item.quantity).toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-2 pt-2 border-t border-gray-200 flex justify-between text-xs">
+                            {transaction.paid !== null ? (
+                              <>
+                                <span>Pagato: €{transaction.paid.toFixed(2)}</span>
+                                <span>Resto: €{transaction.change.toFixed(2)}</span>
+                              </>
+                            ) : (
+                              <span className="text-gray-500 italic">Importo pagato non registrato</span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             );
           }
 
-          return React.createElement('div', { className: "min-h-screen bg-gray-50 p-2" },
-            React.createElement('div', { className: "max-w-4xl mx-auto" },
-              React.createElement(NotificationComponent),
-              
-              React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-3 mb-2" },
-                React.createElement('div', { className: "flex justify-between items-center" },
-                  React.createElement('h1', { className: "text-xl font-bold text-gray-800" }, "SPC Merchandise"),
-                  React.createElement('div', { className: "text-right" },
-                    React.createElement('p', { className: "text-lg font-semibold text-green-600" },
-                      `Totale: €${getTotal().toFixed(2)}`),
-                    React.createElement('p', { className: "text-xs text-gray-500" },
-                      `Oggi: €${getTodayTotal().toFixed(2)} (${getTodayTransactions().length} vendite)`)
-                  )
-                )
-              ),
+          return (
+            <div className="min-h-screen bg-gray-50 p-2">
+              <div className="max-w-4xl mx-auto">
+                <NotificationComponent />
+                
+                {/* Header compatto */}
+                <div className="bg-white rounded-lg shadow-lg p-3 mb-2">
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-xl font-bold text-gray-800">SPC Merchandise</h1>
+                    <div className="text-right">
+                      <p className="text-lg font-semibold text-green-600">
+                        Totale: €{getTotal().toFixed(2)}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Oggi: €{getTodayTotal().toFixed(2)} ({getTodayTransactions().length} vendite)
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-              React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-3 mb-2" },
-                React.createElement('h2', { className: "text-lg font-semibold mb-3 flex items-center gap-2" },
-                  React.createElement(ShoppingCart, { size: 20 }),
-                  "Prodotti"
-                ),
-                React.createElement('div', { className: "grid grid-cols-2 sm:grid-cols-3 gap-2" },
-                  products.map(product =>
-                    React.createElement('button', {
-                      key: product.id,
-                      onClick: () => addToCart(product),
-                      style: { backgroundColor: '#98F7C6', color: '#290BF2' },
-                      className: "p-3 rounded-lg font-semibold text-center hover:opacity-80 transition-opacity touch-manipulation min-h-[70px] flex flex-col justify-center"
-                    },
-                      React.createElement('span', { className: "text-sm font-bold leading-tight" }, product.name),
-                      React.createElement('span', { className: "text-lg font-bold" }, `€${product.price.toFixed(2)}`)
-                    )
-                  )
-                )
-              ),
+                {/* Prodotti */}
+                <div className="bg-white rounded-lg shadow-lg p-3 mb-2">
+                  <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <ShoppingCart size={20} />
+                    Prodotti
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {products.map(product => (
+                      <button
+                        key={product.id}
+                        onClick={() => addToCart(product)}
+                        style={{ backgroundColor: '#98F7C6', color: '#290BF2' }}
+                        className="p-3 rounded-lg font-semibold text-center hover:opacity-80 transition-opacity touch-manipulation min-h-[70px] flex flex-col justify-center"
+                      >
+                        <span className="text-sm font-bold leading-tight">{product.name}</span>
+                        <span className="text-lg font-bold">€{product.price.toFixed(2)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-              cart.length > 0 && React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-3 mb-2" },
-                React.createElement('h2', { className: "text-lg font-semibold mb-2" }, "Carrello"),
-                React.createElement('div', { className: "space-y-2" },
-                  cart.map(item =>
-                    React.createElement('div', {
-                      key: item.id,
-                      className: "flex justify-between items-center bg-gray-50 p-2 rounded-lg"
-                    },
-                      React.createElement('div', { className: "flex-1" },
-                        React.createElement('span', { className: "font-semibold text-sm" }, item.name),
-                        React.createElement('span', { className: "text-gray-600 ml-2 text-xs" }, 
-                          `€${item.price.toFixed(2)} x ${item.quantity}`)
-                      ),
-                      React.createElement('div', { className: "flex items-center gap-2" },
-                        React.createElement('span', { className: "font-semibold text-sm" }, 
-                          `€${(item.price * item.quantity).toFixed(2)}`),
-                        React.createElement('div', { className: "flex gap-1" },
-                          React.createElement('button', {
-                            onClick: () => removeFromCart(item.id),
-                            className: "bg-red-100 text-red-600 p-1 rounded hover:bg-red-200 transition-colors"
-                          }, React.createElement(Minus, { size: 12 })),
-                          React.createElement('button', {
-                            onClick: () => addToCart(item),
-                            className: "bg-green-100 text-green-600 p-1 rounded hover:bg-green-200 transition-colors"
-                          }, React.createElement(Plus, { size: 12 })),
-                          React.createElement('button', {
-                            onClick: () => removeItemCompletely(item.id),
-                            className: "bg-red-500 text-white p-1 rounded hover:bg-red-600 transition-colors"
-                          }, React.createElement(Trash2, { size: 12 }))
-                        )
-                      )
-                    )
-                  )
-                )
-              ),
+                {/* Carrello */}
+                {cart.length > 0 && (
+                  <div className="bg-white rounded-lg shadow-lg p-3 mb-2">
+                    <h2 className="text-lg font-semibold mb-2">Carrello</h2>
+                    <div className="space-y-2">
+                      {cart.map(item => (
+                        <div key={item.id} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg">
+                          <div className="flex-1">
+                            <span className="font-semibold text-sm">{item.name}</span>
+                            <span className="text-gray-600 ml-2 text-xs">€{item.price.toFixed(2)} x {item.quantity}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-sm">€{(item.price * item.quantity).toFixed(2)}</span>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => removeFromCart(item.id)}
+                                className="bg-red-100 text-red-600 p-1 rounded hover:bg-red-200 transition-colors"
+                              >
+                                <Minus size={12} />
+                              </button>
+                              <button
+                                onClick={() => addToCart(item)}
+                                className="bg-green-100 text-green-600 p-1 rounded hover:bg-green-200 transition-colors"
+                              >
+                                <Plus size={12} />
+                              </button>
+                              <button
+                                onClick={() => removeItemCompletely(item.id)}
+                                className="bg-red-500 text-white p-1 rounded hover:bg-red-600 transition-colors"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-3 mb-2" },
-                React.createElement('h2', { className: "text-lg font-semibold mb-2" }, "Pagamento"),
-                React.createElement('div', { className: "grid grid-cols-2 gap-3" },
-                  React.createElement('div', null,
-                    React.createElement('label', { className: "block text-xs font-medium mb-1" }, "Importo Pagato (€)"),
-                    React.createElement('input', {
-                      type: "number",
-                      step: "0.01",
-                      value: amountPaid,
-                      onChange: (e) => setAmountPaid(e.target.value),
-                      className: "w-full p-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                      placeholder: "0.00"
-                    })
-                  ),
-                  React.createElement('div', null,
-                    React.createElement('label', { className: "block text-xs font-medium mb-1" }, "Resto"),
-                    React.createElement('div', {
-                      className: `p-2 rounded-lg text-base font-semibold ${
+                {/* Pagamento */}
+                <div className="bg-white rounded-lg shadow-lg p-3 mb-2">
+                  <h2 className="text-lg font-semibold mb-2">Pagamento</h2>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Importo Pagato (€)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={amountPaid}
+                        onChange={(e) => setAmountPaid(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="0.00"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Resto</label>
+                      <div className={`p-2 rounded-lg text-base font-semibold ${
                         getChange() === null ? 'bg-gray-100 text-gray-500' : 
                         getChange() >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`
-                    }, getChange() === null ? 'N/A' : `€${getChange().toFixed(2)}`)
-                  )
-                )
-              ),
+                      }`}>
+                        {getChange() === null ? 'N/A' : `€${getChange().toFixed(2)}`}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-              React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-3" },
-                React.createElement('div', { className: "grid grid-cols-3 gap-2" },
-                  React.createElement('button', {
-                    onClick: completeSale,
-                    className: "bg-green-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-sm"
-                  }, "Completa Vendita"),
-                  React.createElement('button', {
-                    onClick: newSale,
-                    className: "bg-blue-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm"
-                  }, "Nuova Vendita"),
-                  React.createElement('button', {
-                    onClick: () => setShowHistory(true),
-                    className: "bg-purple-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-1 text-sm"
-                  },
-                    React.createElement(History, { size: 16 }),
-                    "Storico"
-                  )
-                )
-              )
-            )
+                {/* Controlli */}
+                <div className="bg-white rounded-lg shadow-lg p-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={completeSale}
+                      className="bg-green-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-sm"
+                    >
+                      Completa Vendita
+                    </button>
+                    <button
+                      onClick={newSale}
+                      className="bg-blue-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm"
+                    >
+                      Nuova Vendita
+                    </button>
+                    <button
+                      onClick={() => setShowHistory(true)}
+                      className="bg-purple-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-1 text-sm"
+                    >
+                      <History size={16} />
+                      Storico
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           );
         };
 
-        ReactDOM.render(React.createElement(SPCMerchandiseRegister), document.getElementById('root'));
+        ReactDOM.render(<SPCMerchandiseRegister />, document.getElementById('root'));
     </script>
 </body>
 </html>
